@@ -1,6 +1,8 @@
 import { ExperienceBar } from "../components/ExperienceBar";
 import { Profile } from "../components/Profile";
+import {CompletedChallenges} from "../components/CompletedChallenges"
 import styles from '../Styles/pages/Home.module.css'
+
 
 export default function Home() {
   return (
@@ -10,9 +12,11 @@ export default function Home() {
     <section>
       <div>
         <Profile/>
+        <CompletedChallenges/>
+      </div>
+      <div>
 
       </div>
-      <div></div>
     </section>
   </div>
   )
