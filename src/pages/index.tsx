@@ -12,6 +12,7 @@ export default function Home() {
     <div className={styles.container }>
       <Head>
         <title>INICIO | NWL4</title>
+        <link rel="shortcut icon" href="favicon.png" />
       </Head>
     <h1>NLW</h1>
     <ExperienceBar/>
