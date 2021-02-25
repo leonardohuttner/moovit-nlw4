@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode} from 'react';
+import { createContext, useState, ReactNode, useEffect} from 'react';
 import challenges from '../../challenges.json';
 
 interface Challenge{
@@ -14,7 +14,8 @@ interface ChallengeContextData{
     activeChallenge: Challenge;
     levelUp: ()=> void;
     startNewChallenge: ()=> void; 
-    resetChallenge: ()=> void; 
+    resetChallenge: ()=> void;
+    completedChallenge: ()=> void;
 }
 
 interface ChallengesProviderProps{
@@ -31,6 +32,10 @@ export function ChallengesProvider({children}: ChallengesProviderProps){
 
     const experieceToNextLevel = Math.pow((level + 1) * 4 , 2)
 
+    useEffect(()=>{
+        Notification.requestPermission()
+    }, [])
+
     function levelUp(){
         setLevel(level + 1 )
     }
@@ -40,10 +45,34 @@ export function ChallengesProvider({children}: ChallengesProviderProps){
         const challenge = challenges[randomChallengeIndex] 
 
         setActiveChallenge(challenge)
+
+        new Audio('/notification.mp3').play()
+        if(Notification.permission === 'granted'){
+            new Notification('Novo desafio 🎉✨',{
+                body:` Valendo ${challenge.amount}xp MAOEEE!`
+            })
+        }
     }
 
     function resetChallenge(){
         setActiveChallenge(null)
+    }
+
+    function completedChallenge(){
+        if(!activeChallenge){
+            return;
+        }
+        const { amount } = activeChallenge
+        
+        let finalExperience = currentExperience + amount
+
+        if(finalExperience >= experieceToNextLevel){
+            finalExperience = finalExperience-experieceToNextLevel
+            levelUp()
+        }
+        setCrrentExperience(finalExperience);
+        setActiveChallenge(null);
+        setChallengeCompleted(challengeCompleted + 1)
     }
 
     return (
@@ -57,6 +86,7 @@ export function ChallengesProvider({children}: ChallengesProviderProps){
             levelUp,
             startNewChallenge,
             resetChallenge,
+            completedChallenge,
             }}
         >
             {children}
